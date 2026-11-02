@@ -17,7 +17,7 @@ import {
 
 const OPERADORES = ['+', '-', 'X', '/'];
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
   const { escuro, cores, alternar } = useTema();
 
   const [expressao, setExpressao] = useState('');
@@ -39,6 +39,17 @@ export default function HomeScreen({ navigation }) {
     });
     return cancelar;
   }, [navigation]);
+
+  // Evolução 3: recebe um valor vindo do histórico e coloca no display.
+  // Observa o "ts" (muda a cada toque), senão tocar na mesma conta duas vezes
+  // não dispararia o efeito, porque o "valor" seria igual ao anterior.
+  useEffect(() => {
+    if (route?.params?.valor !== undefined) {
+      setExpressao(String(route.params.valor));
+      setResultado('');
+      setLigada(true);
+    }
+  }, [route?.params?.valor, route?.params?.ts]);
 
   // ---------- helpers ----------
   function limparTudo() {
